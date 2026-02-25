@@ -2,6 +2,8 @@
 
 Simple desktop YouTube downloader built with Python, `yt-dlp`, and `customtkinter`.
 
+Also includes a hostable web UI using Gradio.
+
 ## Features
 
 - Modern dark desktop UI
@@ -26,6 +28,29 @@ pip install -r requirements.txt
 ```bash
 python app.py
 ```
+
+## Run Web App (Hostable)
+
+```bash
+python web_app.py
+```
+
+Open:
+
+```text
+http://127.0.0.1:7860
+```
+
+## Host on Render / Railway
+
+1. Push this folder to a GitHub repository.
+2. Create a new Web Service on Render (or a new Project on Railway).
+3. Use:
+	- Build command: `pip install -r requirements.txt`
+	- Start command: `python web_app.py`
+4. Deploy.
+
+The app already reads `PORT` from environment variables.
 
 ## Notes
 
