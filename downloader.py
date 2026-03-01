@@ -61,11 +61,12 @@ class YouTubeDownloader:
                 }
             ]
         elif mode == "Video 1080p (if available)":
-            ydl_opts["format"] = "bestvideo[height<=1080]+bestaudio/best[height<=1080]"
-            ydl_opts["merge_output_format"] = "mp4"
+            ydl_opts["format"] = (
+                "best[height<=1080][vcodec!=none][acodec!=none]/"
+                "best[height<=1080]/best"
+            )
         else:
-            ydl_opts["format"] = "bestvideo+bestaudio/best"
-            ydl_opts["merge_output_format"] = "mp4"
+            ydl_opts["format"] = "best[vcodec!=none][acodec!=none]/best"
 
         self._is_downloading = True
         on_progress(0)
@@ -78,7 +79,13 @@ class YouTubeDownloader:
                 on_progress(1.0)
                 on_done(f"Finished: {title}")
         except Exception as exc:  # noqa: BLE001
-            on_error(f"Download failed: {exc}")
+            error_text = str(exc)
+            if "ffmpeg is not installed" in error_text.lower():
+                on_error(
+                    "FFmpeg is required for MP3 extraction. Install FFmpeg or use a video format."
+                )
+            else:
+                on_error(f"Download failed: {error_text}")
         finally:
             self._is_downloading = False
 

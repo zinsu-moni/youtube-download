@@ -33,11 +33,12 @@ def _download(url: str, mode: str) -> tuple[str, str | None]:
                     }
                 ]
             elif mode == "Video 1080p (if available)":
-                ydl_opts["format"] = "bestvideo[height<=1080]+bestaudio/best[height<=1080]"
-                ydl_opts["merge_output_format"] = "mp4"
+                ydl_opts["format"] = (
+                    "best[height<=1080][vcodec!=none][acodec!=none]/"
+                    "best[height<=1080]/best"
+                )
             else:
-                ydl_opts["format"] = "bestvideo+bestaudio/best"
-                ydl_opts["merge_output_format"] = "mp4"
+                ydl_opts["format"] = "best[vcodec!=none][acodec!=none]/best"
 
             with YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(url.strip(), download=True)
@@ -67,7 +68,13 @@ def _download(url: str, mode: str) -> tuple[str, str | None]:
                 return f"Done: {title}", str(persistent_file)
 
     except Exception as exc:  # noqa: BLE001
-        return f"Failed: {exc}", None
+        error_text = str(exc)
+        if "ffmpeg is not installed" in error_text.lower():
+            return (
+                "FFmpeg is required for MP3 extraction. Install FFmpeg or choose a video format.",
+                None,
+            )
+        return f"Failed: {error_text}", None
 
 
 with gr.Blocks(theme=gr.themes.Soft(), title="YouTube Downloader") as demo:

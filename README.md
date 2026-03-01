@@ -15,7 +15,7 @@ Also includes a hostable web UI using Gradio.
 ## Requirements
 
 - Python 3.10+
-- FFmpeg installed and available in PATH (needed for MP3 extraction and merging some video/audio streams)
+- FFmpeg (optional, required for MP3 mode)
 
 ## Setup
 
